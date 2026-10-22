@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>International Student Deadline & Risk Agent</title>
+  <meta name="description" content="AI-driven academic compliance, deadline tracking, and risk assessment assistant connected to n8n workflow automation.">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%232563EB'%3E%3Cpath d='M12 2a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2 2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zM3 12a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2 2 2 0 0 1-2 2H5a2 2 0 0 1-2-2zm14 0a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-2a2 2 0 0 1-2-2zm-5 5a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-2a2 2 0 0 1 2-2z'/%3E%3Ccircle cx='12' cy='12' r='4' fill='%232563EB'/%3E%3C/svg%3E">
+  
+  <!-- Modern Typography: Plus Jakarta Sans & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Design System & Stylesheets -->
+  <link rel="stylesheet" href="/src/styles/variables.css">
+  <link rel="stylesheet" href="/src/styles/main.css">
+  <link rel="stylesheet" href="/src/styles/chat.css">
+  <link rel="stylesheet" href="/src/styles/composer.css">
+  <link rel="stylesheet" href="/src/styles/modal.css">
+  <link rel="stylesheet" href="/src/styles/syntax.css">
+</head>
+<body>
+  <div class="app-container">
+    
+    <!-- Left Navigation Sidebar -->
+    <aside class="sidebar" id="sidebar" aria-label="Conversation Sidebar">
+      <!-- Top Brand Section -->
+      <div class="sidebar-header">
+        <div class="app-brand">
+          <a href="#" class="brand-link">
+            <div class="brand-logo-icon" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+              </svg>
+            </div>
+            <span class="brand-name sidebar-text">Risk Agent</span>
+          </a>
+          <button type="button" class="btn-icon" id="btn-collapse-sidebar" aria-label="Toggle desktop sidebar" title="Collapse sidebar">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+              <line x1="9" y1="3" x2="9" y2="21"></line>
+            </svg>
+          </button>
+        </div>
+
+        <!-- New Chat Button -->
+        <button type="button" class="btn-new-chat" id="btn-new-chat" aria-label="Start new conversation">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+          <span class="sidebar-text">New Chat</span>
+        </button>
+
+        <!-- Search input -->
+        <div class="search-wrapper">
+          <svg class="search-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <input type="text" class="search-input" id="sidebar-search" placeholder="Search chats..." aria-label="Search conversations">
+        </div>
+      </div>
+
+      <!-- Conversations Scrollable Section -->
+      <div class="conversations-container">
+        <div class="conv-section-header">Recent Conversations</div>
+        <ul class="conv-list" id="conversations-list" role="list">
+          <!-- Dynamic conversation items rendered here -->
+        </ul>
+      </div>
+
+      <!-- Bottom User & Settings Section -->
+      <div class="sidebar-footer">
+        <button type="button" class="sidebar-footer-btn" id="btn-sidebar-settings" aria-label="Open application settings">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+          </svg>
+          <span class="sidebar-footer-text">Settings & API</span>
+        </button>
+
+        <!-- User Profile Pill -->
+        <div class="user-profile" id="user-profile-btn" role="button" tabindex="0" aria-label="User profile settings">
+          <div class="user-avatar-group">
+            <div class="user-avatar" aria-hidden="true">AM</div>
+            <div class="user-info">
+              <span class="user-name">Alex Mercer</span>
+              <span class="user-plan">
+                <span class="user-plan-badge">Enterprise Pro</span>
+              </span>
+            </div>
+          </div>
+          <svg class="sidebar-text" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Mobile Drawer Backdrop -->
+    <div class="sidebar-backdrop" id="sidebar-backdrop" aria-hidden="true"></div>
+
+    <!-- Main Chat Workspace (Pure White Background) -->
+    <main class="main-chat-panel">
+      <!-- Clean Chat Header -->
+      <header class="chat-header" id="chat-header">
+        <div class="chat-header-left">
+          <button type="button" class="btn-icon" id="btn-mobile-menu" aria-label="Open conversations menu">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="3" y1="12" x2="21" y2="12"></line>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+          </button>
+
+          <div class="chat-header-title-group">
+            <div class="chat-title-row">
+              <span class="chat-header-title">Student Risk Agent</span>
+              <span class="status-badge">
+                <span class="status-dot"></span>
+                n8n Connected
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="chat-header-actions">
+          <!-- Model Selector Dropdown -->
+          <div class="model-selector-wrapper">
+            <button type="button" class="model-selector-btn" id="model-selector-btn" aria-haspopup="true" aria-expanded="false">
+              <span id="current-model-name">Workflow-4.5 Ultra</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </button>
+            <div class="model-dropdown-menu" id="model-dropdown-menu" role="menu">
+              <div class="model-option selected" data-model="Workflow-4.5 Ultra" role="menuitem">
+                <div class="model-name">
+                  Workflow-4.5 Ultra
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                </div>
+                <div class="model-desc">Highest reasoning & complex workflows</div>
+              </div>
+              <div class="model-option" data-model="Workflow-4 Turbo" role="menuitem">
+                <div class="model-name">Workflow-4 Turbo</div>
+                <div class="model-desc">Fast, low-latency streaming responses</div>
+              </div>
+              <div class="model-option" data-model="Claude 3.5 Sonnet" role="menuitem">
+                <div class="model-name">Claude 3.5 Sonnet</div>
+                <div class="model-desc">Superior code synthesis & document drafting</div>
+              </div>
+              <div class="model-option" data-model="GPT-4o" role="menuitem">
+                <div class="model-name">GPT-4o</div>
+                <div class="model-desc">Multimodal reasoning & structured analysis</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Header Utility Actions -->
+          <button type="button" class="btn-icon" id="btn-header-export" title="Export conversation as Markdown" aria-label="Export conversation">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+          </button>
+
+          <button type="button" class="btn-icon" id="btn-header-clear" title="Clear chat messages" aria-label="Clear chat">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="3 6 5 6 21 6"></polyline>
+              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+            </svg>
+          </button>
+
+          <button type="button" class="btn-icon" id="btn-header-settings" title="Settings & Webhook configuration" aria-label="Settings">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="3"></circle>
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+            </svg>
+          </button>
+        </div>
+      </header>
+
+      <!-- Scrollable Conversation Area -->
+      <div class="conversation-scroll-area" id="chat-scroll-area">
+        <div class="conversation-inner" id="chat-inner-area">
+          <!-- Dynamic messages or welcome screen will be injected here -->
+        </div>
+      </div>
+
+      <!-- Message Composer Section — Primary Design Feature: Blue Background Box -->
+      <section class="composer-section" aria-label="Message Composer">
+        <div class="composer-inner">
+          <div id="attached-file-container"></div>
+
+          <!-- Blue Container (#2563EB) -->
+          <div class="composer-box">
+            <!-- Accessible Inner Input Field -->
+            <div class="composer-input-card">
+              <textarea 
+                id="composer-textarea" 
+                class="composer-textarea" 
+                placeholder="Ask Student Risk Agent... (Shift + Enter for new line)"
+                rows="1"
+                aria-label="Message input"></textarea>
+              <button type="button" id="btn-stop-generating" class="btn-stop-generating" style="display: none;" aria-label="Stop generation">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                  <rect x="4" y="4" width="16" height="16" rx="2"></rect>
+                </svg>
+                <span>Stop</span>
+              </button>
+            </div>
+
+            <!-- Composer Action Toolbar -->
+            <div class="composer-toolbar">
+              <div class="composer-tools-left">
+                <button type="button" class="btn-composer-tool" id="btn-attach-file" title="Attach file or document" aria-label="Attach file">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path>
+                  </svg>
+                </button>
+                <button type="button" class="btn-composer-tool" id="btn-voice-input" title="Voice dictation" aria-label="Voice input">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                    <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                    <line x1="12" y1="19" x2="12" y2="23"></line>
+                    <line x1="8" y1="23" x2="16" y2="23"></line>
+                  </svg>
+                </button>
+                <div class="tool-badge" title="Academic registry search active">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="2" y1="12" x2="22" y2="12"></line>
+                    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                  </svg>
+                  <span>SEVIS Check</span>
+                </div>
+              </div>
+
+              <div class="composer-tools-right">
+                <span class="char-counter" id="composer-char-count"></span>
+                <button type="button" class="btn-send" id="btn-send" aria-label="Send message" disabled>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="22" y1="2" x2="11" y2="13"></line>
+                    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Subtle Disclaimer -->
+          <p class="composer-disclaimer">Student Risk Agent operates with your n8n workflow. Verify sensitive academic interventions with official student records.</p>
+        </div>
+      </section>
+    </main>
+
+  </div>
+
+  <!-- Settings & Backend Integration Modal -->
+  <div class="modal-overlay" id="settings-modal" role="dialog" aria-modal="true" aria-labelledby="settings-modal-title">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2 class="modal-title" id="settings-modal-title">Settings & Backend Integration</h2>
+        <button type="button" class="btn-icon btn-close-modal" aria-label="Close settings">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+      <form id="settings-form">
+        <div class="modal-body">
+          <div class="form-group" id="setting-webhook-group">
+            <label class="form-label" for="setting-webhook-url">n8n Webhook Endpoint URL</label>
+            <input type="url" class="form-input" id="setting-webhook-url" placeholder="https://ai-agent-apu.app.n8n.cloud/webhook/student-risk-chat">
+            <span class="form-hint" style="margin-top: 4px; line-height: 1.5;">
+              • <strong>Testing Mode</strong>: Use <code>/webhook-test/</code> and click <em>"Listen for test event"</em> in n8n.<br>
+              • <strong>Production Mode</strong>: Use <code>/webhook/</code> and ensure workflow toggle is set to <em>"Active"</em> in n8n.
+            </span>
+            <button type="button" class="btn-secondary" id="btn-test-webhook" style="align-self: flex-start; margin-top: 8px;">Test Webhook Connection</button>
+          </div>
+
+          <div class="form-group" id="setting-api-key-group" style="display: none;">
+            <label class="form-label" for="setting-api-key">Authorization Bearer Token (Optional)</label>
+            <input type="password" class="form-input" id="setting-api-key" placeholder="Bearer sk-...">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="setting-model">Active Intelligence Model</label>
+            <select class="form-select" id="setting-model">
+              <option value="Workflow-4.5 Ultra">Workflow-4.5 Ultra (Recommended)</option>
+              <option value="Workflow-4 Turbo">Workflow-4 Turbo</option>
+              <option value="Claude 3.5 Sonnet">Claude 3.5 Sonnet</option>
+              <option value="GPT-4o">GPT-4o</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="setting-system-prompt">System Directive</label>
+            <textarea class="form-textarea" id="setting-system-prompt" rows="3"></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-secondary btn-cancel-settings">Cancel</button>
+          <button type="submit" class="btn-primary">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Rename Conversation Modal -->
+  <div class="modal-overlay" id="rename-modal" role="dialog" aria-modal="true" aria-labelledby="rename-modal-title">
+    <div class="modal-card" style="max-width: 420px;">
+      <div class="modal-header">
+        <h2 class="modal-title" id="rename-modal-title">Rename Conversation</h2>
+        <button type="button" class="btn-icon btn-close-modal" aria-label="Close">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+      <form id="rename-conv-form">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label" for="rename-conv-title">Conversation Title</label>
+            <input type="text" class="form-input" id="rename-conv-title" required maxlength="60">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-secondary btn-cancel-rename">Cancel</button>
+          <button type="submit" class="btn-primary">Update Title</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Reusable Confirmation Dialog Modal -->
+  <div class="modal-overlay" id="confirm-modal" role="dialog" aria-modal="true" aria-labelledby="confirm-modal-title">
+    <div class="modal-card" style="max-width: 420px;">
+      <div class="modal-header">
+        <h2 class="modal-title" id="confirm-modal-title">Confirm Action</h2>
+        <button type="button" class="btn-icon btn-close-modal" aria-label="Close">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p id="confirm-modal-desc" style="color: var(--color-secondary-text); font-size: 0.92rem; line-height: 1.5; margin: 0;">
+          Are you sure you want to proceed? This action cannot be undone.
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn-secondary btn-cancel-confirm">Cancel</button>
+        <button type="button" class="btn-primary" id="btn-modal-confirm-action" style="background-color: var(--color-error); border-color: var(--color-error);">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Hub -->
+  <div class="toast-container" id="toast-container" aria-live="polite"></div>
+
+  <!-- Application Script -->
+  <script type="module" src="/src/js/app.js"></script>
+</body>
+</html>
