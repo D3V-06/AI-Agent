@@ -721,6 +721,181 @@
   }
 
   .welcome-title {
-    font-size: 1.45rem;
+    font-size: 1.35rem;
+  }
+
+  .welcome-desc {
+    font-size: 0.88rem;
+    margin-bottom: var(--space-5);
+  }
+
+  .welcome-icon-box {
+    width: 52px;
+    height: 52px;
+  }
+
+  .welcome-icon-box svg {
+    width: 26px;
+    height: 26px;
+  }
+
+  /* Smaller assistant avatar on mobile */
+  .assistant-avatar {
+    width: 28px;
+    height: 28px;
+  }
+
+  .assistant-avatar svg {
+    width: 15px;
+    height: 15px;
+  }
+
+  /* Tighter message spacing */
+  .messages-list {
+    gap: var(--space-4);
+  }
+
+  .message-item.assistant {
+    gap: var(--space-2);
+  }
+
+  /* User bubble adjustments */
+  .user-bubble {
+    padding: 10px 14px;
+    font-size: 0.92rem;
+    border-radius: 16px 16px 4px 16px;
+  }
+
+  /* AI markdown text */
+  .assistant-markdown {
+    font-size: 0.92rem;
+    line-height: 1.6;
+  }
+
+  /* Touch-friendly message action buttons */
+  .btn-msg-action {
+    min-height: 36px;
+    min-width: 36px;
+    padding: 6px 10px;
+  }
+
+  /* User message delete always visible on mobile */
+  .btn-msg-delete-user {
+    opacity: 1;
+  }
+
+  /* Code blocks — prevent horizontal overflow */
+  .code-block-container pre {
+    padding: 12px 12px;
+    font-size: 0.82rem;
+  }
+
+  .code-block-header {
+    padding: 6px 10px;
+    font-size: 0.72rem;
+  }
+
+  /* Table responsiveness */
+  .table-wrapper {
+    margin: var(--space-3) 0;
+  }
+
+  .assistant-markdown th,
+  .assistant-markdown td {
+    padding: var(--space-2) var(--space-3);
+    font-size: 0.82rem;
+  }
+
+  /* Model dropdown adapts to mobile */
+  .model-dropdown-menu {
+    right: -8px;
+    width: 220px;
+  }
+
+  .model-option {
+    padding: var(--space-3) var(--space-3);
+    min-height: 44px;
+  }
+
+  .chat-header-title {
+    font-size: 0.92rem;
+  }
+
+  /* Error banner mobile */
+  .chat-error-banner {
+    flex-direction: column;
+    gap: var(--space-2);
+    align-items: flex-start;
+    font-size: 0.82rem;
   }
 }
+
+/* Extra-small phones */
+@media (max-width: 480px) {
+  .conversation-scroll-area {
+    padding: var(--space-3) var(--space-2);
+  }
+
+  .user-bubble-wrapper {
+    max-width: 95%;
+  }
+
+  .welcome-screen {
+    padding: var(--space-5) var(--space-3);
+  }
+
+  .suggestion-card {
+    padding: var(--space-3);
+  }
+
+  .suggestion-title {
+    font-size: 0.85rem;
+  }
+
+  .suggestion-subtitle {
+    font-size: 0.74rem;
+  }
+
+  .suggestion-icon {
+    width: 28px;
+    height: 28px;
+  }
+
+  .assistant-name-bar {
+    flex-wrap: wrap;
+    gap: var(--space-1);
+  }
+
+  /* Make message action labels hidden; keep icons */
+  .btn-msg-action span {
+    display: none;
+  }
+}
+
+/* Landscape orientation on mobile — constrain height */
+@media (max-height: 500px) and (max-width: 900px) {
+  .welcome-screen {
+    padding: var(--space-3) var(--space-3);
+    justify-content: flex-start;
+  }
+
+  .welcome-icon-box {
+    display: none;
+  }
+
+  .welcome-title {
+    font-size: 1.15rem;
+    margin-bottom: var(--space-1);
+  }
+
+  .welcome-desc {
+    font-size: 0.82rem;
+    margin-bottom: var(--space-3);
+  }
+
+  .suggestions-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-2);
+  }
+}
+

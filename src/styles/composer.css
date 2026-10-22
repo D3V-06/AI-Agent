@@ -248,6 +248,7 @@
 @media (max-width: 767px) {
   .composer-section {
     padding: 0 var(--space-3) var(--space-3);
+    padding-bottom: calc(var(--space-3) + env(safe-area-inset-bottom, 0px));
   }
 
   .composer-box {
@@ -259,6 +260,11 @@
     padding: 8px 10px;
   }
 
+  .composer-textarea {
+    font-size: 1rem; /* Prevent iOS zoom on focus */
+    max-height: 120px;
+  }
+
   .tool-badge {
     display: none; /* Hide non-essential pills on narrow mobile screens */
   }
@@ -266,4 +272,47 @@
   .composer-disclaimer {
     font-size: 0.7rem;
   }
+
+  /* Touch-friendly toolbar buttons */
+  .btn-composer-tool {
+    width: 36px;
+    height: 36px;
+  }
+
+  .btn-send {
+    width: 40px;
+    height: 40px;
+  }
 }
+
+/* Extra-small screens */
+@media (max-width: 480px) {
+  .composer-section {
+    padding: 0 var(--space-2) var(--space-2);
+    padding-bottom: calc(var(--space-2) + env(safe-area-inset-bottom, 0px));
+  }
+
+  .composer-box {
+    padding: 6px 8px;
+  }
+
+  .composer-input-card {
+    padding: 6px 8px;
+  }
+
+  .char-counter {
+    display: none;
+  }
+}
+
+/* Landscape on mobile — limit textarea height */
+@media (max-height: 500px) and (max-width: 900px) {
+  .composer-textarea {
+    max-height: 60px;
+  }
+
+  .composer-disclaimer {
+    display: none;
+  }
+}
+
