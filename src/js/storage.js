@@ -225,8 +225,8 @@ export class StorageManager {
       }
       const parsed = JSON.parse(data);
       const merged = { ...DEFAULT_SETTINGS, ...parsed };
-      // If webhookUrl is empty or was set to an old localhost test URL, use the real .env webhook URL
-      if ((!merged.webhookUrl || merged.webhookUrl.includes('localhost:5678')) && envWebhook) {
+      // If webhookUrl is empty or was set to an old localhost test URL or outdated instance domain, use the real .env webhook URL
+      if ((!merged.webhookUrl || merged.webhookUrl.includes('localhost:5678') || merged.webhookUrl.includes('ai-agent-apu.app.n8n.cloud')) && envWebhook) {
         merged.webhookUrl = envWebhook;
         this.saveSettings(merged);
       }

@@ -230,7 +230,6 @@
   cursor: pointer;
   position: relative;
   user-select: none;
-  group: true;
 }
 
 .conv-item:hover {
