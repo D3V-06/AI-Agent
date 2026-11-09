@@ -1,6 +1,6 @@
 /**
- * Storage Manager for AI Workflow Chatbot
- * Manages conversation history, message logs, and user settings in localStorage.
+ * Storage Manager
+ * Manages conversation history, message logs, and webhook settings in localStorage.
  */
 
 const STORAGE_KEYS = {
@@ -10,16 +10,8 @@ const STORAGE_KEYS = {
 };
 
 const DEFAULT_SETTINGS = {
-  model: 'Workflow-4.5 Ultra',
-  webhookUrl: (typeof import.meta !== 'undefined' && import.meta.env?.VITE_N8N_WEBHOOK_URL) || (typeof process !== 'undefined' ? process.env?.VITE_N8N_WEBHOOK_URL : '') || '',
-  apiKey: '',
-  temperature: 0.7,
-  streamSpeed: 18, // ms per word/chunk
-  systemPrompt: 'You are the International Student Deadline & Risk Agent, specialized in evaluating academic milestones, monitoring visa compliance deadlines, calculating risk tiers, and coordinating advisor interventions.'
+  webhookUrl: (typeof import.meta !== 'undefined' && import.meta.env?.VITE_N8N_WEBHOOK_URL) || (typeof process !== 'undefined' ? process.env?.VITE_N8N_WEBHOOK_URL : '') || ''
 };
-
-
-const SEED_CONVERSATIONS = [];
 
 export class StorageManager {
   static getConversations() {
@@ -29,7 +21,7 @@ export class StorageManager {
         const initialConv = {
           id: 'conv-' + Date.now(),
           sessionId: 'session-' + Date.now() + '-' + Math.random().toString(36).substring(2, 9),
-          title: 'Student Support Chat',
+          title: 'New Conversation',
           createdAt: Date.now(),
           updatedAt: Date.now(),
           messages: []
@@ -42,13 +34,12 @@ export class StorageManager {
         return convs;
       }
       const parsed = JSON.parse(data);
-      // Clean out any legacy mock seed conversations
       const cleaned = Array.isArray(parsed) ? parsed.filter(c => !c.id.startsWith('conv-seed-')) : [];
       if (cleaned.length === 0) {
         const initialConv = {
           id: 'conv-' + Date.now(),
           sessionId: 'session-' + Date.now() + '-' + Math.random().toString(36).substring(2, 9),
-          title: 'Student Support Chat',
+          title: 'New Conversation',
           createdAt: Date.now(),
           updatedAt: Date.now(),
           messages: []
@@ -63,7 +54,6 @@ export class StorageManager {
       return [];
     }
   }
-
 
   static saveConversations(convs) {
     localStorage.setItem(STORAGE_KEYS.CONVERSATIONS, JSON.stringify(convs));
@@ -117,7 +107,6 @@ export class StorageManager {
     }
     return conv.sessionId;
   }
-
 
   static updateConversation(id, updates) {
     const convs = this.getConversations();
@@ -180,9 +169,9 @@ export class StorageManager {
       conv.messages.push(message);
       conv.updatedAt = Date.now();
       
-      // Auto-update conversation title from first user message if it was "New Conversation"
-      if (conv.messages.length === 1 && conv.title === 'New Conversation' && message.role === 'user') {
-        const cleanTitle = message.content.slice(0, 36).trim();
+      // Auto-update conversation title from first user message
+      if (conv.messages.length === 1 && (conv.title === 'New Conversation' || conv.title === 'Student Support Chat') && message.role === 'user') {
+        const cleanTitle = message.content.slice(0, 40).trim();
         conv.title = cleanTitle.length > 0 ? cleanTitle : 'Conversation';
       }
 
@@ -224,7 +213,9 @@ export class StorageManager {
         };
       }
       const parsed = JSON.parse(data);
-      const merged = { ...DEFAULT_SETTINGS, ...parsed };
+      const merged = {
+        webhookUrl: parsed.webhookUrl || envWebhook || DEFAULT_SETTINGS.webhookUrl
+      };
       // If webhookUrl is empty or was set to an old localhost test URL or outdated instance domain, use the real .env webhook URL
       if ((!merged.webhookUrl || merged.webhookUrl.includes('localhost:5678') || merged.webhookUrl.includes('ai-agent-apu.app.n8n.cloud')) && envWebhook) {
         merged.webhookUrl = envWebhook;
@@ -237,6 +228,8 @@ export class StorageManager {
   }
 
   static saveSettings(settings) {
-    localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(settings));
+    localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify({
+      webhookUrl: settings.webhookUrl || ''
+    }));
   }
 }

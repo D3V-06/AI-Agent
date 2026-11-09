@@ -17,17 +17,20 @@ export class SidebarComponent {
     this.btnCollapseDesktop = document.getElementById('btn-collapse-sidebar');
     this.btnNewChat = document.getElementById('btn-new-chat');
     this.btnSettings = document.getElementById('btn-sidebar-settings');
-    this.userProfileEl = document.getElementById('user-profile-btn');
 
     this.searchQuery = '';
     this.init();
   }
 
   init() {
-    // Desktop collapse toggle
+    // Sidebar toggle: closes drawer on mobile, toggles collapse on desktop
     if (this.btnCollapseDesktop) {
       this.btnCollapseDesktop.addEventListener('click', () => {
-        this.toggleDesktopCollapse();
+        if (window.innerWidth <= 767) {
+          this.closeMobileDrawer();
+        } else {
+          this.toggleDesktopCollapse();
+        }
       });
     }
 
@@ -37,6 +40,13 @@ export class SidebarComponent {
         this.closeMobileDrawer();
       });
     }
+
+    // Escape key closes mobile drawer
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && this.sidebarEl?.classList.contains('mobile-open')) {
+        this.closeMobileDrawer();
+      }
+    });
 
     // New Chat button
     if (this.btnNewChat) {
@@ -49,13 +59,6 @@ export class SidebarComponent {
     // Settings button
     if (this.btnSettings) {
       this.btnSettings.addEventListener('click', () => {
-        this.onOpenSettings();
-        this.closeMobileDrawer();
-      });
-    }
-
-    if (this.userProfileEl) {
-      this.userProfileEl.addEventListener('click', () => {
         this.onOpenSettings();
         this.closeMobileDrawer();
       });
@@ -102,7 +105,7 @@ export class SidebarComponent {
     if (filtered.length === 0) {
       this.convListEl.innerHTML = `
         <div class="empty-conv-hint">
-          ${this.searchQuery ? 'No matching conversations' : 'No previous conversations'}
+          ${this.searchQuery ? 'No matching conversations' : 'No conversations yet'}
         </div>
       `;
       return;
@@ -206,7 +209,7 @@ export class SidebarComponent {
       window.openConfirmModal({
         title: 'Delete Conversation',
         message: `Are you sure you want to delete "${this.escapeHtml(title)}"? This will permanently remove its message history.`,
-        confirmText: 'Delete Conversation',
+        confirmText: 'Delete',
         danger: true,
         onConfirm: executeDelete
       });

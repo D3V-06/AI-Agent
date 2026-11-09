@@ -1,6 +1,6 @@
 /**
  * Modals and Toast Manager
- * Handles settings modal (Webhook/Simulated modes), conversation rename dialog, and feedback toasts.
+ * Handles webhook configuration modal, conversation rename dialog, confirmation dialog, and feedback toasts.
  */
 import { StorageManager } from '../storage.js';
 
@@ -40,9 +40,9 @@ export class ModalsManager {
 
       setTimeout(() => {
         toast.style.opacity = '0';
-        toast.style.transform = 'translateY(8px)';
+        toast.style.transform = 'translateY(-6px)';
         setTimeout(() => toast.remove(), 250);
-      }, 3000);
+      }, 2800);
     };
   }
 
@@ -54,7 +54,6 @@ export class ModalsManager {
     const form = document.getElementById('settings-form');
     const testWebhookBtn = document.getElementById('btn-test-webhook');
 
-    // Close handlers
     [btnClose, btnCancel].forEach(b => {
       if (b) b.addEventListener('click', () => this.closeSettings());
     });
@@ -73,7 +72,7 @@ export class ModalsManager {
         }
 
         testWebhookBtn.disabled = true;
-        testWebhookBtn.textContent = 'Pinging n8n...';
+        testWebhookBtn.textContent = 'Testing...';
 
         try {
           const resp = await fetch(url, {
@@ -86,11 +85,11 @@ export class ModalsManager {
           });
 
           if (resp.ok) {
-            window.showToast('n8n Webhook reached successfully (HTTP 200)!', 'success');
+            window.showToast('n8n Webhook reached (HTTP 200)', 'success');
           } else if (resp.status === 404 && url.includes('/webhook-test/')) {
-            window.showToast('HTTP 404: In n8n, click "Listen for test event", then test again.', 'info');
+            window.showToast('HTTP 404: Click "Listen for test event" in n8n first.', 'info');
           } else if (resp.status === 404) {
-            window.showToast('HTTP 404: Webhook not found. Ensure workflow toggle is set to "Active" in n8n.', 'error');
+            window.showToast('HTTP 404: Ensure workflow is set to "Active" in n8n.', 'error');
           } else {
             window.showToast(`n8n returned HTTP ${resp.status}`, 'error');
           }
@@ -98,7 +97,7 @@ export class ModalsManager {
           window.showToast(`Connection failed: ${err.message}`, 'error');
         } finally {
           testWebhookBtn.disabled = false;
-          testWebhookBtn.textContent = 'Test Webhook Connection';
+          testWebhookBtn.textContent = 'Test Connection';
         }
       });
     }
@@ -108,32 +107,20 @@ export class ModalsManager {
       form.addEventListener('submit', (e) => {
         e.preventDefault();
         const settings = StorageManager.getSettings();
-
         settings.webhookUrl = document.getElementById('setting-webhook-url')?.value.trim() || '';
-        settings.apiKey = document.getElementById('setting-api-key')?.value.trim() || '';
-        settings.model = document.getElementById('setting-model')?.value || 'Workflow-4.5 Ultra';
-        settings.systemPrompt = document.getElementById('setting-system-prompt')?.value.trim() || '';
 
         StorageManager.saveSettings(settings);
         this.closeSettings();
-        this.onSettingsSaved(settings);
-        window.showToast('Settings saved successfully', 'success');
+        if (this.onSettingsSaved) this.onSettingsSaved(settings);
+        window.showToast('Webhook settings saved', 'success');
       });
     }
   }
 
   openSettings() {
     const settings = StorageManager.getSettings();
-
     const urlInput = document.getElementById('setting-webhook-url');
-    const keyInput = document.getElementById('setting-api-key');
-    const modelSelect = document.getElementById('setting-model');
-    const promptInput = document.getElementById('setting-system-prompt');
-
     if (urlInput) urlInput.value = settings.webhookUrl || '';
-    if (keyInput) keyInput.value = settings.apiKey || '';
-    if (modelSelect) modelSelect.value = settings.model || 'Workflow-4.5 Ultra';
-    if (promptInput) promptInput.value = settings.systemPrompt || '';
 
     this.settingsModal.classList.add('open');
   }
@@ -223,13 +210,7 @@ export class ModalsManager {
       if (descEl) descEl.textContent = message || 'Are you sure you want to proceed?';
       if (btnConfirm) {
         btnConfirm.textContent = confirmText;
-        if (danger) {
-          btnConfirm.style.backgroundColor = 'var(--color-error)';
-          btnConfirm.style.borderColor = 'var(--color-error)';
-        } else {
-          btnConfirm.style.backgroundColor = 'var(--color-primary-blue)';
-          btnConfirm.style.borderColor = 'var(--color-primary-blue)';
-        }
+        btnConfirm.classList.toggle('btn-danger', Boolean(danger));
       }
       confirmCallback = onConfirm;
       this.confirmModal.classList.add('open');

@@ -22,8 +22,8 @@ class App {
   init() {
     // 1. Initialize Modals
     this.modals = new ModalsManager({
-      onSettingsSaved: (settings) => {
-        this.chatPanel.updateModelDisplay();
+      onSettingsSaved: () => {
+        this.chatPanel.updateWebhookStatus();
       }
     });
 
@@ -34,10 +34,12 @@ class App {
         this.chatPanel.renderMessages();
       },
       onNewChat: () => {
-        const newConv = StorageManager.createConversation('New Conversation');
+        StorageManager.createConversation('New Conversation');
         this.sidebar.renderConversationList();
         this.chatPanel.renderMessages();
-        this.composer.focus();
+        if (window.innerWidth > 768) {
+          this.composer.focus();
+        }
       },
       onOpenSettings: () => {
         this.modals.openSettings();
@@ -88,7 +90,7 @@ class App {
     };
     StorageManager.addMessage(activeId, userMsg);
     this.sidebar.renderConversationList();
-    this.chatPanel.appendUserMessage(prompt);
+    this.chatPanel.appendUserMessage(prompt, userMsg.id);
 
     // 2. Transition composer to generating state
     this.composer.setGeneratingState(true);
@@ -123,7 +125,7 @@ class App {
     });
   }
 
-  finishStreamGeneration(isNaturalComplete = true) {
+  finishStreamGeneration() {
     const activeId = StorageManager.getActiveId();
     if (!activeId || !this.activeStreamText) {
       this.composer.setGeneratingState(false);
@@ -139,7 +141,7 @@ class App {
       timestamp: Date.now()
     };
     StorageManager.addMessage(activeId, assistantMsg);
-    this.chatPanel.finishStreamingMessage(this.activeStreamText);
+    this.chatPanel.finishStreamingMessage(this.activeStreamText, assistantMsg.id);
     this.sidebar.renderConversationList();
     this.composer.setGeneratingState(false);
     this.activeStreamText = '';
