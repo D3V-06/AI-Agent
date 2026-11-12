@@ -12,10 +12,15 @@ export class N8nService {
    * @returns {string} The active webhook URL
    */
   static getWebhookUrl() {
-    const envUrl = (typeof import.meta !== 'undefined' && import.meta.env?.VITE_N8N_WEBHOOK_URL) || (typeof process !== 'undefined' ? process.env?.VITE_N8N_WEBHOOK_URL : '') || '';
+    const envUrl = (typeof import.meta !== 'undefined' && import.meta.env?.VITE_N8N_WEBHOOK_URL) || (typeof process !== 'undefined' ? process.env?.VITE_N8N_WEBHOOK_URL : '') || 'https://ahmad12365443.app.n8n.cloud/webhook/student-risk-chat';
     const settings = StorageManager.getSettings();
     if (settings && settings.webhookUrl && settings.webhookUrl.trim().length > 0) {
-      if ((!settings.webhookUrl.includes('localhost:5678') && !settings.webhookUrl.includes('ai-agent-apu.app.n8n.cloud')) || !envUrl) {
+      if (
+        (!settings.webhookUrl.includes('localhost:5678') &&
+          !settings.webhookUrl.includes('ai-agent-apu.app.n8n.cloud') &&
+          !settings.webhookUrl.includes('apu-work.app.n8n.cloud')) ||
+        !envUrl
+      ) {
         return settings.webhookUrl.trim();
       }
     }

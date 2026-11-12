@@ -35,7 +35,7 @@ cp .env.example .env
 Set `VITE_N8N_WEBHOOK_URL` to your active n8n webhook endpoint:
 
 ```env
-VITE_N8N_WEBHOOK_URL=https://apu-work.app.n8n.cloud/webhook/student-risk-chat
+VITE_N8N_WEBHOOK_URL=https://ahmad12365443.app.n8n.cloud/webhook/student-risk-chat
 ```
 
 ### 3. Run Development Server

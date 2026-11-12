@@ -9,8 +9,10 @@ const STORAGE_KEYS = {
   SETTINGS: 'ai_workflow_settings'
 };
 
+const DEFAULT_WEBHOOK_URL = 'https://ahmad12365443.app.n8n.cloud/webhook/student-risk-chat';
+
 const DEFAULT_SETTINGS = {
-  webhookUrl: (typeof import.meta !== 'undefined' && import.meta.env?.VITE_N8N_WEBHOOK_URL) || (typeof process !== 'undefined' ? process.env?.VITE_N8N_WEBHOOK_URL : '') || ''
+  webhookUrl: (typeof import.meta !== 'undefined' && import.meta.env?.VITE_N8N_WEBHOOK_URL) || (typeof process !== 'undefined' ? process.env?.VITE_N8N_WEBHOOK_URL : '') || DEFAULT_WEBHOOK_URL
 };
 
 export class StorageManager {
@@ -205,7 +207,7 @@ export class StorageManager {
   static getSettings() {
     try {
       const data = typeof localStorage !== 'undefined' ? localStorage.getItem(STORAGE_KEYS.SETTINGS) : null;
-      const envWebhook = (typeof import.meta !== 'undefined' && import.meta.env?.VITE_N8N_WEBHOOK_URL) || (typeof process !== 'undefined' ? process.env?.VITE_N8N_WEBHOOK_URL : '') || '';
+      const envWebhook = (typeof import.meta !== 'undefined' && import.meta.env?.VITE_N8N_WEBHOOK_URL) || (typeof process !== 'undefined' ? process.env?.VITE_N8N_WEBHOOK_URL : '') || DEFAULT_WEBHOOK_URL;
       if (!data) {
         return {
           ...DEFAULT_SETTINGS,
@@ -216,8 +218,14 @@ export class StorageManager {
       const merged = {
         webhookUrl: parsed.webhookUrl || envWebhook || DEFAULT_SETTINGS.webhookUrl
       };
-      // If webhookUrl is empty or was set to an old localhost test URL or outdated instance domain, use the real .env webhook URL
-      if ((!merged.webhookUrl || merged.webhookUrl.includes('localhost:5678') || merged.webhookUrl.includes('ai-agent-apu.app.n8n.cloud')) && envWebhook) {
+      // If webhookUrl is empty or was set to an old localhost test URL or outdated instance domain, use the active webhook URL
+      if (
+        (!merged.webhookUrl ||
+          merged.webhookUrl.includes('localhost:5678') ||
+          merged.webhookUrl.includes('ai-agent-apu.app.n8n.cloud') ||
+          merged.webhookUrl.includes('apu-work.app.n8n.cloud')) &&
+        envWebhook
+      ) {
         merged.webhookUrl = envWebhook;
         this.saveSettings(merged);
       }
